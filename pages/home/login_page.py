@@ -44,4 +44,8 @@ class LoginPage(SeleniumDriver):
                                        locatorType="xpath")
         return result
 
-
+    def verifyTitle(self):
+        if "Let's Kode It" in self.getTitle():
+            return True
+        else:
+            return False
