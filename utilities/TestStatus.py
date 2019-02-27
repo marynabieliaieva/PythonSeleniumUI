@@ -10,6 +10,7 @@ Example:
 import utilities.custom_logger as cl
 import logging
 from base.selenium_driver import SeleniumDriver
+from traceback import print_stack
 
 class TestStatus(SeleniumDriver):
 
@@ -36,10 +37,11 @@ class TestStatus(SeleniumDriver):
                 self.resultList.append("FAIL")
                 self.log.error("### VERIFICATION FAILED :: + " + resultMessage)
                 self.screenShot(resultMessage)
-                self.screenShot(resultMessage)
         except:
             self.resultList.append("FAIL")
             self.log.error("### Exception Occurred !!!")
+            self.screenShot(resultMessage)
+            print_stack()
 
     def mark(self, result, resultMessage):
         """
@@ -56,10 +58,10 @@ class TestStatus(SeleniumDriver):
         self.setResult(result, resultMessage)
 
         if "FAIL" in self.resultList:
-            self.log.error(testName + "### TEST FAILED")
+            self.log.error(testName +  " ### TEST FAILED")
             self.resultList.clear()
             assert True == False
         else:
-            self.log.info(testName + "### TEST SUCCESSFUL")
+            self.log.info(testName + " ### TEST SUCCESSFUL")
             self.resultList.clear()
             assert True == True

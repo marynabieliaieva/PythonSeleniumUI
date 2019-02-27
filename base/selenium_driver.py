@@ -15,9 +15,11 @@ class SeleniumDriver():
     def __init__(self, driver):
         self.driver = driver
 
-
     def screenShot(self, resultMessage):
-        fileName = resultMessage + "." + str(round(time.time()*1000))+".png"
+        """
+        Takes screenshot of the current open web page
+        """
+        fileName = resultMessage + "." + str(round(time.time() * 1000)) + ".png"
         screenshotDirectory = "../screenshots/"
         relativeFileName = screenshotDirectory + fileName
         currentDirectory = os.path.dirname(__file__)
@@ -30,9 +32,8 @@ class SeleniumDriver():
             self.driver.save_screenshot(destinationFile)
             self.log.info("Screenshot save to directory: " + destinationFile)
         except:
-            self.log.error("### Exception Occured")
+            self.log.error("### Exception Occurred when taking screenshot")
             print_stack()
-
 
     def getTitle(self):
         return self.driver.title
@@ -101,14 +102,17 @@ class SeleniumDriver():
                 "Cannot clear data from the element with locator: " + locator + " locatorType: " + locatorType)
             print_stack()
 
+
     def isElementPresent(self, locator, locatorType="id"):
         try:
             element = self.getElement(locator, locatorType)
             if element is not None:
-                self.log.info("Element Found")
+                self.log.info("Element present with locator: " + locator +
+                              " locatorType: " + locatorType)
                 return True
             else:
-                self.log.info("Element not found")
+                self.log.info("Element not present with locator: " + locator +
+                              " locatorType: " + locatorType)
                 return False
         except:
             print("Element not found")
@@ -118,10 +122,12 @@ class SeleniumDriver():
         try:
             elementList = self.driver.find_elements(byType, locator)
             if len(elementList) > 0:
-                self.log.info("Element Found")
+                self.log.info("Element present with locator: " + locator +
+                              " locatorType: " + str(byType))
                 return True
             else:
-                self.log.info("Element not found")
+                self.log.info("Element not present with locator: " + locator +
+                              " locatorType: " + str(byType))
                 return False
         except:
             self.log.info("Element not found")

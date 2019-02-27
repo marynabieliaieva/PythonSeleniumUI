@@ -1,8 +1,8 @@
-from base.selenium_driver import SeleniumDriver
 import utilities.custom_logger as cl
 import logging
+from base.basepage import BasePage
 
-class LoginPage(SeleniumDriver):
+class LoginPage(BasePage):
 
     log = cl.customLogger(logging.DEBUG)
 
@@ -44,8 +44,5 @@ class LoginPage(SeleniumDriver):
                                        locatorType="xpath")
         return result
 
-    def verifyTitle(self):
-        if "Let's Kode It" in self.getTitle():
-            return True
-        else:
-            return False
+    def verifyLoginTitle(self):
+        return self.verifyPageTitle("Let's Kode It")

@@ -16,7 +16,7 @@ class LoginTests(unittest.TestCase):
     @pytest.mark.run(order=2)
     def test_validLogin(self):
         self.lp.login("test@email.com", "abcabc")
-        result1 = self.lp.verifyTitle()
+        result1 = self.lp.verifyLoginTitle()
         self.ts.mark(result1, "Title is incorrect")
         assert result1 == True
         result2 = self.lp.verifyLoginSuccessful()
