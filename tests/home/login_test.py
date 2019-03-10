@@ -1,6 +1,5 @@
-from selenium import webdriver
 from pages.home.login_page import LoginPage
-from utilities.TestStatus import TestStatus
+from utilities.TostStatus import TostStatus
 import unittest
 import pytest
 
@@ -10,7 +9,7 @@ class LoginTests(unittest.TestCase):
     @pytest.fixture(autouse=True)
     def classSetup(self, oneTimeSetUp):
         self.lp = LoginPage(self.driver)
-        self.ts = TestStatus(self.driver)
+        self.ts = TostStatus(self.driver)
 
 
     @pytest.mark.run(order=2)
