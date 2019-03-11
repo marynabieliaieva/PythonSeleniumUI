@@ -1,26 +1,21 @@
 from pages.courses.register_courses_page import RegisterCoursesPage
-from pages.home.login_page import LoginPage
 from utilities.TostStatus import TostStatus
 import unittest
 import pytest
 
 @pytest.mark.usefixtures("oneTimeSetUp", "setUp")
-class LoginTests(unittest.TestCase):
+class RegisterCoursesTests(unittest.TestCase):
 
     @pytest.fixture(autouse=True)
-    def classSetup(self, oneTimeSetUp):
-        self.rc = RegisterCoursesPage(self.driver)
-        # self.ts = TostStatus(self.driver)
-        self.lp = LoginPage(self.driver)
-
+    def objectSetup(self, oneTimeSetUp):
+        self.courses = RegisterCoursesPage(self.driver)
+        self.ts = TostStatus(self.driver)
 
     @pytest.mark.run(order=1)
     def test_invalidEnrollment(self):
-        self.lp.login("test@email.com", "abcabc")
-        self.rc.enrollCourse("JavaScript", "9879 5435 1321 2132", "10/25", "125", "Albania", "1231654")
-        self.rc.verifyEnrollFailed()
-
-
-
-
-
+        self.courses.enterCourseName("JavaScript")
+        self.courses.selectCourseToEnroll("JavaScript for beginners")
+        self.courses.enrollCourse(num="1234 5678 9012 3456", exp="1220", cvv="444", zip="12345")
+        result = self.courses.verifyEnrollFailed()
+        self.ts.markFinal("test_invalidEnrollment", result,
+                          "Enrollment Failed Verification")

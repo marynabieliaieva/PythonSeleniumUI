@@ -3,90 +3,81 @@ import logging
 from base.basepage import BasePage
 
 class RegisterCoursesPage(BasePage):
+
     log = cl.customLogger(logging.DEBUG)
 
     def __init__(self, driver):
         super().__init__(driver)
         self.driver = driver
 
-    # Locators
+    ################
+    ### Locators ###
+    ################
     _search_box = "search-courses"
-    _search_button = "search-course-button"
-    _course = "course-listing-title"
-    _all_courses = ""
+    _search_course_icon = "search-course-button"
+    _course = "//div[contains(@class,'course-listing-title') and contains(text(),'{0}')]"
+    _all_courses = "course-listing-title"
     _enroll_button = "enroll-button-top"
-    _cc_num = "cardnumber"
+    _cc_num = "//input[@aria-label='Credit or debit card number']"
     _cc_exp = "exp-date"
     _cc_cvv = "cvc"
-    _cc_country = "country_code_credit_card-cc"
-    _cc_postal_code = "postal"
-    _cc_agreeded = "agreed_to_terms_checkbox"
-    _submit_enroll = "confirm-purchase"
-    _successfull_message = "message"
+    _zip = "postal"
+    _agree_to_terms_checkbox = "agreed_to_terms_checkbox"
+    _submit_enroll = "//button[@id='confirm-purchase']/parent::div"
 
+    ############################
+    ### Element Interactions ###
+    ############################
 
+    def enterCourseName(self, name):
+        self.sendKeys(name, locator=self._search_box)
+        self.elementClick(locator=self._search_course_icon)
 
-    # card number = 9879 5435 1321 2132
-    # date = 10/25
-    # cvc = 125
-    # country = albania
-    # postal code = 1231654
+    def selectCourseToEnroll(self, fullCourseName):
+        self.elementClick(locator=self._course.format(fullCourseName), locatorType="xpath")
 
-
-    def enterCourseToEnroll(self, fullCourseName):
-        self.clear(self._search_box)
-        self.sendKeys(fullCourseName, self._search_box)
-        self.elementClick(self._search_button)
-
-    def clickToFindedCourse(self):
-        self.elementClick(self._course, locatorType="class")
-
-    def clickEnrollButton(self):
-        self.elementClick(self._enroll_button)
+    def clickOnEnrollButton(self):
+        self.elementClick(locator=self._enroll_button)
 
     def enterCardNum(self, num):
-        self.clear(self._cc_num)
-        self.sendKeys(num, self._cc_num, locatorType="name")
+        self.switchToFrame(name="__privateStripeFrame4")
+        self.sendKeys(num, locator=self._cc_num, locatorType="xpath")
+        self.switchToDefaultContent()
 
     def enterCardExp(self, exp):
-        self.clear(self._cc_exp)
-        self.sendKeys(exp, self._cc_exp, locatorType="name")
+        self.switchToFrame(name="__privateStripeFrame5")
+        self.sendKeys(exp, locator=self._cc_exp, locatorType="name")
+        self.switchToDefaultContent()
 
     def enterCardCVV(self, cvv):
-        self.clear(self._cc_cvv)
-        self.sendKeys(cvv, self._cc_cvv, locatorType="name")
+        self.switchToFrame(name="__privateStripeFrame6")
+        self.sendKeys(cvv, locator=self._cc_cvv, locatorType="name")
+        self.switchToDefaultContent()
 
-    def selectCardCountry(self, country):
-         self.select(country, self._cc_country)
+    def enterZip(self, zip):
+        self.switchToFrame(name="__privateStripeFrame7")
+        self.sendKeys(zip, locator=self._zip, locatorType="name")
+        self.switchToDefaultContent()
 
-    def enterCardPostalCode(self, postalCode):
-        self.clear(self._cc_postal_code)
-        self.sendKeys(postalCode, self._cc_postal_code, locatorType="name")
-
-    def clickAgreemetnCheckBox(self):
-        self.elementClick(self._cc_agreeded)
+    def clickAgreeToTermsCheckbox(self):
+        self.elementClick(locator=self._agree_to_terms_checkbox)
 
     def clickEnrollSubmitButton(self):
-        self.elementClick(self._submit_enroll)
+        self.elementClick(locator=self._submit_enroll, locatorType="xpath")
 
-    def enterCreditCardInformation(self, num, exp, cvv, country, postalCode):
+    def enterCreditCardInformation(self, num, exp, cvv, zip):
         self.enterCardNum(num)
         self.enterCardExp(exp)
         self.enterCardCVV(cvv)
-        self.selectCardCountry(country)
-        self.enterCardPostalCode(postalCode)
-        self.clickAgreemetnCheckBox()
-        self.clickEnrollSubmitButton()
+        self.enterZip(zip)
 
-
-    def enrollCourse(self, fullCourseName="", num="", exp="", cvv="", country="", postalCode=""):
-        self.enterCourseToEnroll(fullCourseName)
-        self.clickToFindedCourse()
-        self.clickEnrollButton()
-        self.enterCreditCardInformation(num, exp, cvv, country, postalCode)
+    def enrollCourse(self, num="", exp="", cvv="", zip=""):
+        self.clickOnEnrollButton()
+        self.webScroll(direction="down")
+        self.enterCreditCardInformation(num, exp, cvv, zip)
+        self.clickAgreeToTermsCheckbox()
 
     def verifyEnrollFailed(self):
-        result = self.isElementPresent("//div[contains(text(),'Payment is not success')]",
-                                       locatorType="xpath")
-        return result
-
+        result = self.isEnabled(locator=self._submit_enroll, locatorType="xpath",
+                                info="Enroll Button")
+        return not result
