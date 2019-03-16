@@ -1,4 +1,5 @@
 from pages.courses.register_courses_page import RegisterCoursesPage
+from pages.home.navigation_page import NavigationPage
 from utilities.TostStatus import TostStatus
 import unittest
 import pytest
@@ -14,9 +15,10 @@ class RegisterCoursesCSVDataTests(unittest.TestCase):
     def objectSetup(self, oneTimeSetUp):
         self.courses = RegisterCoursesPage(self.driver)
         self.ts = TostStatus(self.driver)
+        self.nav = NavigationPage(self.driver)
 
     def setUp(self):
-        self.driver.find_element_by_link_text("All Courses").click()
+        self.nav.navigateToAllCourses()
 
     @pytest.mark.run(order=1)
     @data(*getCSVData('/Users/Mari/PycharmProjects/letskodeit/testdata.csv'))
