@@ -10,6 +10,7 @@ Example:
 """
 import traceback
 from selenium import webdriver
+import os
 
 class WebDriverFactory():
 
@@ -46,7 +47,10 @@ class WebDriverFactory():
             driver = webdriver.Firefox()
         elif self.browser == "chrome":
             # Set chrome driver
-            driver = webdriver.Chrome()
+            chromedriver = "/Users/atomar/Documents/workspace_personal/selenium/chromedriver"
+            os.environ["webdriver.chrome.driver"] = chromedriver
+            driver = webdriver.Chrome(chromedriver)
+            driver.set_window_size(1440, 900)
         else:
             driver = webdriver.Firefox()
         # Setting Driver Implicit Time out for An Element

@@ -32,7 +32,8 @@ class NavigationPage(BasePage):
 
     def navigateToUserSetting(self):
         self.elementClick(locator=self._logo, locatorType="xpath")
-        self.elementClick(locator=self._user_settings_icon, locatorType="xpath")
+        userSettingsElement = self.waitForElement(locator=self._user_settings_icon, locatorType="xpath", pollFrequency=1)
+        self.elementClick(element=userSettingsElement)
 
 
 

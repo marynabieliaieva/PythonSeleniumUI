@@ -55,4 +55,5 @@ class LoginPage(BasePage):
     def logout(self):
         self.elementClick(locator=self._logo, locatorType="xpath")
         self.nav.navigateToUserSetting()
-        self.elementClick(locator=self._logout, locatorType="xpath")
+        logoutLinkElement = self.waitForElement(locator=self._logout, locatorType="xpath", pollFrequency=1)
+        self.elementClick(element=logoutLinkElement)
